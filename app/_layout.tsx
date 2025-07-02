@@ -60,8 +60,21 @@ function CustomHeader() {
     <SafeAreaView edges={['top']} style={{ backgroundColor: MagicPalette.white }}>
       <View style={styles.header}>
         {showBack && (
-          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 10, padding: 6, borderRadius: 20, backgroundColor: MagicPalette.purple, shadowColor: MagicPalette.purple, shadowOpacity: 0.15, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 }}>
-            <IconSymbol name="chevron.left" size={22} color={MagicPalette.white} />
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={{
+              marginRight: 10,
+              padding: 4,
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: MagicPalette.purple,
+              backgroundColor: 'transparent',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <IconSymbol name="chevron.left" size={22} color={MagicPalette.purple} />
           </TouchableOpacity>
         )}
         <IconSymbol name={icon as any} size={28} color={MagicPalette.purple} style={{ marginRight: 10 }} />
@@ -112,16 +125,19 @@ export default function RootLayout() {
   return (
     <AuthContext.Provider value={{ user, signOut, updateProfile }}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
+        <Stack screenOptions={{ headerShown: true, header: () => <CustomHeader /> }}
+        >
           {showAuth ? (
             <>
-              <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-              <Stack.Screen name="sign-up" options={{ headerShown: false }} />
-              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+              <Stack.Screen name="sign-in"  />
+              <Stack.Screen name="sign-up" />
+              <Stack.Screen name="onboarding" />
             </>
           ) : (
             <>
-              <Stack.Screen name="(tabs)" options={{ headerShown: true, header: () => <CustomHeader /> }} />
+              <Stack.Screen 
+                name="(tabs)"
+              />
               <Stack.Screen name="+not-found" options={{ headerShown: false }} />
             </>
           )}

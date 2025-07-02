@@ -1,50 +1,114 @@
-# Welcome to your Expo app 👋
+# Networking App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern React Native (Expo) app for networking events, built with Expo Router and ready for Supabase backend integration.
 
-## Get started
+## Project Overview
+This app provides a social platform for discovering, creating, and joining networking events. It features:
+- Custom navigation and theming
+- Event creation and discovery
+- User profiles and onboarding
+- Ready for Supabase backend integration
 
-1. Install dependencies
+---
 
-   ```bash
+## Prerequisites
+- **Node.js** (v18 or newer recommended)
+- **npm** (v9 or newer) or **yarn**
+- **Expo CLI**: `npm install -g expo-cli`
+- **EAS CLI** (for cloud builds): `npm install -g eas-cli`
+- (Optional) **Git** for version control
+
+---
+
+## Setup
+1. **Clone the repository:**
+   ```sh
+   git clone <your-repo-url>
+   cd networking-app
+   ```
+2. **Install dependencies:**
+   ```sh
    npm install
+   # or
+   yarn install
+   ```
+3. **Start Expo development server:**
+   ```sh
+   expo start
    ```
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
+## Running the App
+- **On Android/iOS device:**
+  - Install the Expo Go app from the Play Store/App Store.
+  - Scan the QR code from `expo start` in your terminal or browser.
+- **On Android emulator/iOS simulator:**
+  - Make sure you have the emulator/simulator running.
+  - Press `a` (Android) or `i` (iOS) in the Expo CLI terminal.
+
+---
+
+## Building an APK (Android)
+1. **Cloud build (recommended):**
+   ```sh
+   eas build -p android --profile preview
+   ```
+   - Follow the link provided after the build completes to download your APK.
+2. **Local build (advanced, requires Android SDK):**
+   ```sh
+   expo run:android --variant release
    ```
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Integrating Supabase Backend
+1. **Create a Supabase project:**
+   - Go to [supabase.com](https://supabase.com/) and create a new project.
+2. **Install Supabase client:**
+   ```sh
+   npm install @supabase/supabase-js
+   ```
+3. **Configure Supabase:**
+   - Create a file (e.g., `lib/supabase.ts`):
+     ```ts
+     import { createClient } from '@supabase/supabase-js';
+     export const supabase = createClient('https://<your-project>.supabase.co', '<your-anon-key>');
+     ```
+   - Add your Supabase URL and anon key from your Supabase dashboard.
+4. **Use Supabase in your app:**
+   - Import and use the `supabase` client for authentication, database, and storage features.
+   - Example usage:
+     ```ts
+     import { supabase } from '@/lib/supabase';
+     const { data, error } = await supabase.from('events').select('*');
+     ```
+5. **Environment variables (optional):**
+   - Use a `.env` file and a library like `react-native-dotenv` for managing secrets.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## Useful Commands
+- `expo start` — Start the development server
+- `eas build -p android` — Build Android APK in the cloud
+- `expo run:android` — Build and run locally (requires Android SDK)
+- `npm run lint` — Lint the codebase
+- `npm install` — Install dependencies
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+## Resources
+- [Expo Documentation](https://docs.expo.dev/)
+- [Expo Router](https://expo.github.io/router/docs)
+- [Supabase Documentation](https://supabase.com/docs)
+- [EAS Build](https://docs.expo.dev/build/introduction/)
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## License
+[MIT](LICENSE)
