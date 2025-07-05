@@ -85,11 +85,11 @@ android {
     ndkVersion rootProject.ext.ndkVersion
 
     buildToolsVersion rootProject.ext.buildToolsVersion
-    compileSdk rootProject.ext.compileSdkVersion
+    compileSdkVersion 34
 
-    namespace 'com.simpledandy.networkingapp'
+    namespace 'com.simpledandy.befriend'
     defaultConfig {
-        applicationId 'com.simpledandy.networkingapp'
+        applicationId 'com.simpledandy.befriend'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

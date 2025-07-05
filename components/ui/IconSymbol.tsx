@@ -24,7 +24,44 @@ const MAPPING = {
   'person.crop.circle': 'person',
   'sparkles': 'auto-awesome',
   'plus.circle.fill': 'add-circle',
-} as IconMapping;
+  'message.fill': 'message',
+  'sportscourt.fill': 'sports-soccer',
+  'airplane': 'flight',
+  'laptopcomputer': 'laptop',
+  'paintbrush.fill': 'brush',
+  'building.2.fill': 'business',
+  'person.3.fill': 'group',
+  'book.fill': 'book',
+  'fork.knife': 'restaurant',
+  'music.note': 'music-note',
+  'gamecontroller.fill': 'sports-esports',
+  'figure.run': 'directions-run',
+  'leaf.fill': 'eco',
+  'circle.fill': 'fiber-manual-record',
+  'wifi': 'wifi',
+  'clock.fill': 'schedule',
+  'pencil': 'edit',
+  'text.quote': 'format-quote',
+  'ellipsis': 'more-horiz',
+  'arrow.up.circle.fill': 'keyboard-arrow-up',
+  'bell.fill': 'notifications',
+  'lock.fill': 'lock',
+  'questionmark.circle.fill': 'help',
+  'magnifyingglass': 'search',
+  'calendar.badge.clock': 'schedule',
+  'bubble.left.and.bubble.right.fill': 'chat-bubble',
+  'bubble.left.fill': 'chat-bubble-outline',
+  'checkmark.circle.fill': 'check-circle',
+  'xmark.circle.fill': 'cancel',
+  'person.fill': 'person',
+  'globe': 'language',
+  'clock': 'access-time',
+  'message': 'message',
+  'brain.head.profile': 'psychology',
+  'translate': 'translate',
+  'smart-toy': 'smart-toy',
+  'robot': 'smart-toy',
+} as unknown as IconMapping;
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
@@ -43,5 +80,6 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  const iconName = MAPPING[name] || 'help-outline';
+  return <MaterialIcons color={color} size={size} name={iconName} style={style} />;
 }

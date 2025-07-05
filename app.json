@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "networking-app",
-    "slug": "networking-app",
+    "name": "BeFriend",
+    "slug": "befriend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "networkingapp",
+    "scheme": "befriend",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -17,7 +17,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.simpledandy.networkingapp"
+      "package": "com.simpledandy.befriend"
     },
     "web": {
       "bundler": "metro",

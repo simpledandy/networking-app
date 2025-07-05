@@ -2,6 +2,7 @@ import { MagicalButton } from '@/components/ui/MagicalButton';
 import { MagicPalette } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from './_layout';
 
@@ -11,10 +12,11 @@ export default function SignInScreen() {
   const [error, setError] = useState('');
   const router = useRouter();
   const { updateProfile } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const handleSignIn = () => {
     if (!email || !password) {
-      setError('Please enter email and password.');
+      setError(t('error.enterEmailPassword'));
       return;
     }
     // Mock backend: accept any non-empty credentials
@@ -41,9 +43,9 @@ export default function SignInScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+      <Text style={styles.title}>{t('signIn.title')}</Text>
       <TextInput
-        placeholder="Email"
+        placeholder={t('signIn.emailPlaceholder')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -51,16 +53,16 @@ export default function SignInScreen() {
         style={styles.input}
       />
       <TextInput
-        placeholder="Password"
+        placeholder={t('signIn.passwordPlaceholder')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
         style={styles.input}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <MagicalButton title="Sign In" onPress={handleSignIn} color={MagicPalette.purple} style={{ marginTop: 12 }} />
+      <MagicalButton title={t('signIn.button')} onPress={handleSignIn} color={MagicPalette.purple} style={{ marginTop: 12 }} />
       <TouchableOpacity onPress={() => router.replace('/sign-up')} style={{ marginTop: 16 }}>
-        <Text style={styles.link}>Don't have an account? Sign Up</Text>
+        <Text style={styles.link}>{t('signIn.noAccount')}</Text>
       </TouchableOpacity>
     </View>
   );

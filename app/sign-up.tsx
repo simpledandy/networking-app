@@ -2,6 +2,7 @@ import { MagicalButton } from '@/components/ui/MagicalButton';
 import { MagicPalette } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from './_layout';
 
@@ -12,14 +13,15 @@ export default function SignUpScreen() {
   const [error, setError] = useState('');
   const router = useRouter();
   const { updateProfile } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const handleSignUp = () => {
     if (!email || !password || !confirm) {
-      setError('Please fill all fields.');
+      setError(t('error.fillAllFields'));
       return;
     }
     if (password !== confirm) {
-      setError('Passwords do not match.');
+      setError(t('error.passwordsNoMatch'));
       return;
     }
     // Mock backend: accept any non-empty credentials
@@ -46,9 +48,9 @@ export default function SignUpScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title}>{t('signUp.title')}</Text>
       <TextInput
-        placeholder="Email"
+        placeholder={t('signUp.emailPlaceholder')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -56,23 +58,23 @@ export default function SignUpScreen() {
         style={styles.input}
       />
       <TextInput
-        placeholder="Password"
+        placeholder={t('signUp.passwordPlaceholder')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
         style={styles.input}
       />
       <TextInput
-        placeholder="Confirm Password"
+        placeholder={t('signUp.confirmPasswordPlaceholder')}
         value={confirm}
         onChangeText={setConfirm}
         secureTextEntry
         style={styles.input}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <MagicalButton title="Sign Up" onPress={handleSignUp} color={MagicPalette.purple} style={{ marginTop: 12 }} />
+      <MagicalButton title={t('signUp.button')} onPress={handleSignUp} color={MagicPalette.purple} style={{ marginTop: 12 }} />
       <TouchableOpacity onPress={() => router.replace('/sign-in')} style={{ marginTop: 16 }}>
-        <Text style={styles.link}>Already have an account? Sign In</Text>
+        <Text style={styles.link}>{t('signUp.haveAccount')}</Text>
       </TouchableOpacity>
     </View>
   );

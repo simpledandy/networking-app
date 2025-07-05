@@ -1,154 +1,300 @@
-import { MagicPalette } from '@/constants/Colors';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { MagicalButton } from '@/components/ui/MagicalButton';
+import { MagicGradients, MagicPalette } from '@/constants/Colors';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useContext, useMemo, useState } from 'react';
-import { Alert, Button, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { AuthContext } from '../_layout';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const profile = {
-  name: 'Taylor Morgan',
-  title: 'Product Designer',
-  company: 'Designify',
-  location: 'San Francisco, CA',
-  avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-  interests: ['UX', 'Startups', 'AI', 'Networking'],
-  bio: 'Passionate about connecting people and building beautiful products. Always open to new opportunities and collaborations.',
-  connections: 128,
-  sessions: 14,
-  reviews: 23,
-  friends: [
-    { id: 'alex', name: 'Alex Johnson', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
-    { id: 'jamie', name: 'Jamie Lee', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
-    { id: 'sam', name: 'Sam Patel', avatar: 'https://randomuser.me/api/portraits/men/45.jpg' },
-  ],
-};
+// Activity categories for profile
+const activityCategories = [
+  {
+    id: 'sports',
+    icon: 'sportscourt.fill',
+    color: MagicPalette.orange,
+    gradient: [MagicPalette.orange, MagicPalette.yellow],
+  },
+  {
+    id: 'travel',
+    icon: 'airplane',
+    color: MagicPalette.blue,
+    gradient: [MagicPalette.blue, MagicPalette.teal],
+  },
+  {
+    id: 'tech',
+    icon: 'laptopcomputer',
+    color: MagicPalette.purple,
+    gradient: [MagicPalette.purple, MagicPalette.pink],
+  },
+  {
+    id: 'creative',
+    icon: 'paintbrush.fill',
+    color: MagicPalette.hotPink,
+    gradient: [MagicPalette.hotPink, MagicPalette.orange],
+  },
+  {
+    id: 'business',
+    icon: 'building.2.fill',
+    color: MagicPalette.teal,
+    gradient: [MagicPalette.teal, MagicPalette.green],
+  },
+  {
+    id: 'social',
+    icon: 'person.3.fill',
+    color: MagicPalette.pink,
+    gradient: [MagicPalette.pink, MagicPalette.purple],
+  },
+  {
+    id: 'learning',
+    icon: 'book.fill',
+    color: MagicPalette.green,
+    gradient: [MagicPalette.green, MagicPalette.blue],
+  },
+  {
+    id: 'food',
+    icon: 'fork.knife',
+    color: MagicPalette.yellow,
+    gradient: [MagicPalette.yellow, MagicPalette.orange],
+  },
+  {
+    id: 'music',
+    icon: 'music.note',
+    color: MagicPalette.purple,
+    gradient: [MagicPalette.purple, MagicPalette.hotPink],
+  },
+  {
+    id: 'gaming',
+    icon: 'gamecontroller.fill',
+    color: MagicPalette.blue,
+    gradient: [MagicPalette.blue, MagicPalette.purple],
+  },
+  {
+    id: 'fitness',
+    icon: 'figure.run',
+    color: MagicPalette.green,
+    gradient: [MagicPalette.green, MagicPalette.teal],
+  },
+  {
+    id: 'outdoors',
+    icon: 'leaf.fill',
+    color: MagicPalette.teal,
+    gradient: [MagicPalette.teal, MagicPalette.green],
+  },
+];
 
-const currentUserId = 'taylor';
+function CategoryCard({ category, isSelected, onPress }: { category: any; isSelected: boolean; onPress: () => void }) {
+  const { t } = useTranslation();
+  const [scaleAnim] = useState(new Animated.Value(1));
 
-function MagicalButton({ title, onPress, color = MagicPalette.purple, icon, style = {} }) {
+  const handlePress = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, { toValue: 0.95, duration: 100, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
+    ]).start();
+    onPress();
+  };
+
   return (
-    <TouchableOpacity style={[{
-      flexDirection: 'row', alignItems: 'center', backgroundColor: color, borderRadius: 24, paddingVertical: 10, paddingHorizontal: 24, marginVertical: 4, alignSelf: 'center', shadowColor: color, shadowOpacity: 0.12, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 }, style]} onPress={onPress} activeOpacity={0.85}>
-      {icon}
-      <Text style={{ color: MagicPalette.white, fontWeight: 'bold', fontSize: 16 }}>{title}</Text>
-    </TouchableOpacity>
+    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+      <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
+        <LinearGradient 
+          colors={isSelected ? category.gradient : ['#f8f9fa', '#f8f9fa']} 
+          style={[styles.categoryCard, isSelected && styles.selectedCard]}
+        >
+          <IconSymbol 
+            name={category.icon} 
+            size={24} 
+            color={isSelected ? MagicPalette.white : category.color} 
+            style={{ marginBottom: 4 }} 
+          />
+          <Text style={[styles.categoryText, isSelected && styles.selectedText]}>
+            {t(`category.${category.id}`)}
+          </Text>
+        </LinearGradient>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+}
+
+function StatCard({ title, value, icon, color }: { title: string; value: string; icon: string; color: string }) {
+  return (
+    <View style={styles.statCard}>
+      <IconSymbol name={icon} size={20} color={color} style={{ marginBottom: 8 }} />
+      <Text style={styles.statValue}>{value}</Text>
+      <Text style={styles.statTitle}>{title}</Text>
+    </View>
   );
 }
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, signOut, updateProfile } = useContext(AuthContext);
-  if (!user) return null;
-  const [editVisible, setEditVisible] = useState(false);
-  const [editProfile, setEditProfile] = useState(user);
+  const { t } = useTranslation();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(['tech', 'business', 'creative']);
+  const [isAvailable, setIsAvailable] = useState(true);
 
-  // Mock additional activity data
-  const eventsCreated = 12; // TODO: fetch from backend
-  const comments = 34; // TODO: fetch from backend
-  const reactions = 56; // TODO: fetch from backend
-
-  // Reputation calculation
-  const reputation = useMemo(() => {
-    let score = 0;
-    score += Math.min(user.connections, 200) * 2;
-    score += Math.min(user.sessions, 100) * 5;
-    score += Math.min(user.reviews, 50) * 10;
-    score += Math.min(eventsCreated, 50) * 8;
-    score += Math.min(user.friends.length, 100) * 3;
-    score += Math.min(comments, 200) * 1;
-    score += Math.min(reactions, 200) * 0.5;
-    // Decay: mock last activity 10 days ago (no decay)
-    // If last activity > 30 days, score *= 0.9
-    return Math.min(Math.round(score), 1000);
-  }, [user, eventsCreated, comments, reactions]);
-
-  const getLevel = (score: number) => {
-    if (score < 200) return { label: 'Newbie', emoji: '🌱' };
-    if (score < 400) return { label: 'Social Explorer', emoji: '🧭' };
-    if (score < 600) return { label: 'Connector', emoji: '🤝' };
-    if (score < 800) return { label: 'Influencer', emoji: '🌟' };
-    return { label: 'Super Networker', emoji: '🚀' };
+  const handleCategoryToggle = (categoryId: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(categoryId) 
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
+    );
   };
-  const level = getLevel(reputation);
 
-  const handleSave = () => {
-    updateProfile(editProfile);
-    setEditVisible(false);
-    Alert.alert('Profile updated!');
+  const handleSignOut = () => {
+    router.push('/sign-in');
+  };
+
+  const handleEditProfile = () => {
+    // Handle profile editing
+    console.log('Edit profile');
+  };
+
+  const toggleAvailability = () => {
+    setIsAvailable(!isAvailable);
   };
 
   return (
-    <ScrollView contentContainerStyle={{ alignItems: 'center', padding: 16 }}>
-      <View style={styles.card}>
-        <Image source={{ uri: user.avatar }} style={styles.avatar} />
-        <Text style={styles.name}>{user.name}</Text>
-        <Text style={styles.title}>{user.title} at {user.company}</Text>
-        <Text style={styles.location}>{user.location}</Text>
-        <View style={styles.chipRow}>
-          {(user.interests || []).map((interest) => (
-            <View key={interest} style={styles.chip}>
-              <Text style={styles.chipText}>{interest}</Text>
-            </View>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Profile Header */}
+      <LinearGradient colors={MagicGradients.main as [string, string, ...string[]]} style={styles.profileHeader}>
+        <View style={styles.profileInfo}>
+          <Image 
+            source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} 
+            style={styles.profileAvatar} 
+          />
+          <View style={styles.profileDetails}>
+            <Text style={styles.profileName}>Taylor Morgan</Text>
+            <Text style={styles.profileTitle}>Product Designer</Text>
+            <Text style={styles.profileCompany}>Designify</Text>
+            <Text style={styles.profileLocation}>San Francisco, CA</Text>
+          </View>
+        </View>
+        
+        <View style={styles.profileActions}>
+          <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+            <IconSymbol name="pencil" size={16} color={MagicPalette.purple} />
+            <Text style={styles.editButtonText}>{t('profile.edit')}</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+
+      {/* Stats */}
+      <View style={styles.statsContainer}>
+        <StatCard 
+          title={t('profile.connections')} 
+          value="128" 
+          icon="person.2.fill" 
+          color={MagicPalette.blue} 
+        />
+        <StatCard 
+          title={t('profile.sessions')} 
+          value="14" 
+                      icon="bubble.left.fill" 
+          color={MagicPalette.green} 
+        />
+        <StatCard 
+          title={t('profile.reviews')} 
+          value="23" 
+          icon="star.fill" 
+          color={MagicPalette.yellow} 
+        />
+      </View>
+
+      {/* Availability Toggle */}
+      <View style={styles.availabilityContainer}>
+        <LinearGradient colors={MagicGradients.card as [string, string, ...string[]]} style={styles.availabilityCard}>
+          <View style={styles.availabilityHeader}>
+            <IconSymbol name="wifi" size={20} color={MagicPalette.purple} />
+            <Text style={styles.availabilityTitle}>{t('profile.availability')}</Text>
+          </View>
+          <Text style={styles.availabilityDescription}>
+            {isAvailable ? t('profile.availableDescription') : t('profile.unavailableDescription')}
+          </Text>
+          <TouchableOpacity 
+            style={[styles.availabilityToggle, isAvailable && styles.availabilityToggleActive]} 
+            onPress={toggleAvailability}
+          >
+            <View style={[styles.toggleThumb, isAvailable && styles.toggleThumbActive]} />
+          </TouchableOpacity>
+        </LinearGradient>
+      </View>
+
+      {/* Activity Categories */}
+      <View style={styles.categoriesContainer}>
+        <View style={styles.sectionHeader}>
+          <IconSymbol name="sparkles" size={24} color={MagicPalette.purple} />
+          <Text style={styles.sectionTitle}>{t('profile.interests')}</Text>
+        </View>
+        <Text style={styles.sectionDescription}>
+          {t('profile.interestsDescription')}
+        </Text>
+        
+        <View style={styles.categoriesGrid}>
+          {activityCategories.map(category => (
+            <CategoryCard
+              key={category.id}
+              category={category}
+              isSelected={selectedCategories.includes(category.id)}
+              onPress={() => handleCategoryToggle(category.id)}
+            />
           ))}
         </View>
-        <Text style={styles.bio}>{user.bio}</Text>
-        {/* Reputation System */}
-        <View style={styles.reputationBox}>
-          <Text style={styles.repLabel}>Reputation</Text>
-          <View style={styles.repRow}>
-            <Text style={styles.repScore}>{reputation}</Text>
-            <Text style={styles.repLevel}>{level.emoji} {level.label}</Text>
-          </View>
-          <View style={styles.repBarBg}>
-            <View style={[styles.repBarFill, { width: `${reputation / 10}%` }]} />
-          </View>
-        </View>
-        {/* End Reputation System */}
-        <View style={styles.statsRow}>
-          <View style={styles.stat}><Text style={styles.statNum}>{user.connections}</Text><Text style={styles.statLabel}>Connections</Text></View>
-          <View style={styles.stat}><Text style={styles.statNum}>{user.sessions}</Text><Text style={styles.statLabel}>Sessions</Text></View>
-          <View style={styles.stat}><Text style={styles.statNum}>{user.reviews}</Text><Text style={styles.statLabel}>Reviews</Text></View>
-        </View>
-        <MagicalButton title="Edit Profile" onPress={() => setEditVisible(true)} icon={null} />
-        <MagicalButton title="Sign Out" onPress={() => { signOut(); router.replace('/sign-in'); }} color={MagicPalette.pink} icon={null} />
-        <MagicalButton title="View/Add Reviews" onPress={() => router.push('/(tabs)/review')} color={MagicPalette.blue} icon={null} />
-        <View style={styles.friendsSection}>
-          <Text style={styles.friendsTitle}>Friends</Text>
-          <FlatList
-            data={user.friends || []}
-            keyExtractor={item => item.id}
-            horizontal
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.friendCard}
-                onPress={() => {
-                  if (item.id !== currentUserId) {
-                    router.push({ pathname: '/(tabs)/friend-profile', params: { id: item.id } });
-                  }
-                }}
-              >
-                <Image source={{ uri: item.avatar }} style={styles.friendAvatar} />
-                <Text style={styles.friendName}>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-            style={{ marginTop: 8 }}
-          />
-        </View>
       </View>
-      <Modal visible={editVisible} animationType="slide">
-        <View style={[styles.container, { justifyContent: 'center', backgroundColor: MagicPalette.gray }]}> 
-          <View style={[styles.card, { width: '100%', backgroundColor: MagicPalette.white }]}> 
-            <Text style={[styles.name, { color: MagicPalette.purple }]}>Edit Profile</Text>
-            <TextInput value={editProfile.name} onChangeText={v => setEditProfile(p => ({ ...p, name: v }))} style={styles.input} placeholder="Name" placeholderTextColor={MagicPalette.darkGray} />
-            <TextInput value={editProfile.title} onChangeText={v => setEditProfile(p => ({ ...p, title: v }))} style={styles.input} placeholder="Title" placeholderTextColor={MagicPalette.darkGray} />
-            <TextInput value={editProfile.company} onChangeText={v => setEditProfile(p => ({ ...p, company: v }))} style={styles.input} placeholder="Company" placeholderTextColor={MagicPalette.darkGray} />
-            <TextInput value={editProfile.location} onChangeText={v => setEditProfile(p => ({ ...p, location: v }))} style={styles.input} placeholder="Location" placeholderTextColor={MagicPalette.darkGray} />
-            <TextInput value={editProfile.bio} onChangeText={v => setEditProfile(p => ({ ...p, bio: v }))} style={styles.input} placeholder="Bio" multiline placeholderTextColor={MagicPalette.darkGray} />
-            <TextInput value={editProfile.avatar} onChangeText={v => setEditProfile(p => ({ ...p, avatar: v }))} style={styles.input} placeholder="Avatar URL" placeholderTextColor={MagicPalette.darkGray} />
-            <Button title="Save" onPress={handleSave} color={MagicPalette.purple} />
-            <Button title="Cancel" onPress={() => setEditVisible(false)} color={MagicPalette.darkGray} />
+
+      {/* Bio */}
+      <View style={styles.bioContainer}>
+        <LinearGradient colors={MagicGradients.card as [string, string, ...string[]]} style={styles.bioCard}>
+          <View style={styles.sectionHeader}>
+            <IconSymbol name="text.quote" size={20} color={MagicPalette.purple} />
+            <Text style={styles.sectionTitle}>{t('profile.bio')}</Text>
           </View>
-        </View>
-      </Modal>
+          <Text style={styles.bioText}>
+            Passionate about connecting people and building beautiful products. 
+            I love collaborating on innovative projects and helping others grow their skills.
+          </Text>
+        </LinearGradient>
+      </View>
+
+      {/* Settings */}
+      <View style={styles.settingsContainer}>
+        <LinearGradient colors={MagicGradients.card as [string, string, ...string[]]} style={styles.settingsCard}>
+          <TouchableOpacity style={styles.settingItem}>
+            <IconSymbol name="bell.fill" size={20} color={MagicPalette.purple} />
+            <Text style={styles.settingText}>{t('profile.notifications')}</Text>
+            <IconSymbol name="chevron.right" size={16} color={MagicPalette.darkGray} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.settingItem}>
+            <IconSymbol name="lock.fill" size={20} color={MagicPalette.purple} />
+            <Text style={styles.settingText}>{t('profile.privacy')}</Text>
+            <IconSymbol name="chevron.right" size={16} color={MagicPalette.darkGray} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.settingItem}>
+            <IconSymbol name="questionmark.circle.fill" size={20} color={MagicPalette.purple} />
+            <Text style={styles.settingText}>{t('profile.help')}</Text>
+            <IconSymbol name="chevron.right" size={16} color={MagicPalette.darkGray} />
+          </TouchableOpacity>
+          
+          <View style={styles.settingItem}>
+            <IconSymbol name="globe" size={20} color={MagicPalette.purple} />
+            <Text style={styles.settingText}>{t('profile.language')}</Text>
+            <LanguageSwitcher />
+          </View>
+        </LinearGradient>
+      </View>
+
+      {/* Sign Out */}
+      <View style={styles.signOutContainer}>
+        <MagicalButton
+          title={t('profile.signOut')}
+          onPress={handleSignOut}
+          color={MagicPalette.hotPink}
+          style={{ marginBottom: 24 }}
+        />
+      </View>
     </ScrollView>
   );
 }
@@ -156,189 +302,245 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: MagicPalette.gray,
-    alignItems: 'center',
-    padding: 16,
+    backgroundColor: '#f8f9fa',
   },
-  card: {
-    backgroundColor: MagicPalette.white,
-    borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: 400,
-    shadowColor: MagicPalette.purple,
-    shadowOpacity: 0.10,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
+  profileHeader: {
+    padding: 20,
+    paddingTop: 40,
   },
-  avatar: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    marginBottom: 12,
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    color: MagicPalette.purple,
-  },
-  title: {
-    fontSize: 16,
-    color: MagicPalette.blue,
-    marginBottom: 2,
-  },
-  location: {
-    fontSize: 14,
-    color: MagicPalette.teal,
-    marginBottom: 10,
-  },
-  chipRow: {
+  profileInfo: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 10,
-  },
-  chip: {
-    backgroundColor: MagicPalette.teal,
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    marginRight: 6,
-    marginBottom: 6,
-  },
-  chipText: {
-    color: MagicPalette.purple,
-    fontWeight: '600',
-  },
-  bio: {
-    fontSize: 15,
-    color: MagicPalette.black,
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 16,
-    marginTop: 8,
-  },
-  stat: {
     alignItems: 'center',
-    flex: 1,
+    marginBottom: 16,
   },
-  statNum: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: MagicPalette.purple,
-  },
-  statLabel: {
-    fontSize: 13,
-    color: MagicPalette.darkGray,
-  },
-  editBtn: {
-    backgroundColor: MagicPalette.purple,
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    marginBottom: 10,
-    marginTop: 4,
-  },
-  editBtnText: {
-    color: MagicPalette.white,
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  friendsSection: {
-    marginTop: 24,
-    width: '100%',
-  },
-  friendsTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 6,
-    color: MagicPalette.purple,
-  },
-  friendCard: {
-    alignItems: 'center',
+  profileAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     marginRight: 16,
-  },
-  friendAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginBottom: 4,
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: MagicPalette.white,
   },
-  friendName: {
-    fontSize: 13,
-    color: MagicPalette.black,
+  profileDetails: {
+    flex: 1,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: MagicPalette.teal,
-    borderRadius: 4,
-    padding: 10,
-    marginBottom: 10,
-    color: MagicPalette.black,
-    backgroundColor: MagicPalette.white,
+  profileName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: MagicPalette.white,
+    marginBottom: 4,
   },
-  reputationBox: {
-    width: '100%',
+  profileTitle: {
+    fontSize: 16,
+    color: MagicPalette.white,
+    opacity: 0.9,
+    marginBottom: 2,
+  },
+  profileCompany: {
+    fontSize: 14,
+    color: MagicPalette.white,
+    opacity: 0.8,
+    marginBottom: 2,
+  },
+  profileLocation: {
+    fontSize: 14,
+    color: MagicPalette.white,
+    opacity: 0.7,
+  },
+  profileActions: {
+    alignItems: 'flex-end',
+  },
+  editButton: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 18,
-    marginTop: 8,
-    padding: 12,
-    backgroundColor: MagicPalette.gray,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: MagicPalette.purple,
+    backgroundColor: MagicPalette.white,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  editButtonText: {
+    color: MagicPalette.purple,
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    padding: 16,
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: MagicPalette.white,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
     shadowColor: MagicPalette.purple,
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  repLabel: {
+  statValue: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: MagicPalette.purple,
-    fontSize: 15,
-    marginBottom: 2,
+    marginBottom: 4,
   },
-  repRow: {
+  statTitle: {
+    fontSize: 12,
+    color: MagicPalette.darkGray,
+    textAlign: 'center',
+  },
+  availabilityContainer: {
+    padding: 16,
+  },
+  availabilityCard: {
+    padding: 16,
+    borderRadius: 16,
+    shadowColor: MagicPalette.purple,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+  },
+  availabilityHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
-    gap: 12,
+    marginBottom: 8,
   },
-  repScore: {
-    fontSize: 22,
+  availabilityTitle: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: MagicPalette.purple,
-    marginRight: 8,
+    marginLeft: 8,
   },
-  repLevel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: MagicPalette.blue,
+  availabilityDescription: {
+    fontSize: 14,
+    color: MagicPalette.darkGray,
+    marginBottom: 16,
+    lineHeight: 20,
   },
-  repBarBg: {
-    width: '100%',
-    height: 10,
+  availabilityToggle: {
+    width: 50,
+    height: 28,
+    backgroundColor: MagicPalette.lightGray,
+    borderRadius: 14,
+    padding: 2,
+    alignSelf: 'flex-start',
+  },
+  availabilityToggleActive: {
+    backgroundColor: MagicPalette.green,
+  },
+  toggleThumb: {
+    width: 24,
+    height: 24,
     backgroundColor: MagicPalette.white,
-    borderRadius: 5,
-    overflow: 'hidden',
-    marginTop: 2,
-    borderWidth: 1,
-    borderColor: MagicPalette.purple,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 2,
   },
-  repBarFill: {
-    height: '100%',
-    backgroundColor: MagicPalette.purple,
-    borderRadius: 5,
+  toggleThumbActive: {
+    transform: [{ translateX: 22 }],
+  },
+  categoriesContainer: {
+    padding: 16,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: MagicPalette.purple,
+    marginLeft: 8,
+  },
+  sectionDescription: {
+    fontSize: 14,
+    color: MagicPalette.darkGray,
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  categoriesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  categoryCard: {
+    width: '30%',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 80,
+    shadowColor: MagicPalette.purple,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  selectedCard: {
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  categoryText: {
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: MagicPalette.darkGray,
+  },
+  selectedText: {
+    color: MagicPalette.white,
+  },
+  bioContainer: {
+    padding: 16,
+  },
+  bioCard: {
+    padding: 16,
+    borderRadius: 16,
+    shadowColor: MagicPalette.purple,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+  },
+  bioText: {
+    fontSize: 14,
+    color: MagicPalette.darkGray,
+    lineHeight: 20,
+  },
+  settingsContainer: {
+    padding: 16,
+  },
+  settingsCard: {
+    borderRadius: 16,
+    shadowColor: MagicPalette.purple,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  settingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: MagicPalette.white,
+    borderBottomWidth: 1,
+    borderBottomColor: MagicPalette.lightGray,
+  },
+  settingText: {
+    flex: 1,
+    fontSize: 16,
+    color: MagicPalette.darkGray,
+    marginLeft: 12,
+  },
+  signOutContainer: {
+    padding: 16,
   },
 }); 

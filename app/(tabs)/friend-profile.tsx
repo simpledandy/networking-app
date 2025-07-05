@@ -1,5 +1,6 @@
 import { MagicPalette } from '@/constants/Colors';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const allFriends = {
@@ -78,12 +79,12 @@ function getReputation(user) {
   return Math.min(Math.round(score), 1000);
 }
 
-function getLevel(score) {
-  if (score < 200) return { label: 'Newbie', emoji: '🌱' };
-  if (score < 400) return { label: 'Social Explorer', emoji: '🧭' };
-  if (score < 600) return { label: 'Connector', emoji: '🤝' };
-  if (score < 800) return { label: 'Influencer', emoji: '🌟' };
-  return { label: 'Super Networker', emoji: '🚀' };
+function getLevel(score, t) {
+  if (score < 200) return { label: t('profile.level.newbie'), emoji: '🌱' };
+  if (score < 400) return { label: t('profile.level.socialExplorer'), emoji: '🧭' };
+  if (score < 600) return { label: t('profile.level.connector'), emoji: '🤝' };
+  if (score < 800) return { label: t('profile.level.influencer'), emoji: '🌟' };
+  return { label: t('profile.level.superNetworker'), emoji: '🚀' };
 }
 
 export default function FriendProfileScreen() {
@@ -91,6 +92,7 @@ export default function FriendProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const friend = allFriends[id as keyof typeof allFriends];
   const currentUserId = 'taylor';
+  const { t } = useTranslation();
 
   if (id === currentUserId) {
     router.replace('/(tabs)/profile');
@@ -108,7 +110,7 @@ export default function FriendProfileScreen() {
         <Text style={styles.name}>{friend.name}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
           <Text style={{ fontSize: 18, fontWeight: 'bold', color: MagicPalette.purple }}>{getReputation(friend)}</Text>
-          <Text style={{ fontSize: 18, marginLeft: 6 }}>{getLevel(getReputation(friend)).emoji} {getLevel(getReputation(friend)).label}</Text>
+          <Text style={{ fontSize: 18, marginLeft: 6 }}>{getLevel(getReputation(friend), t).emoji} {getLevel(getReputation(friend), t).label}</Text>
         </View>
         {friend.bio && <Text style={{ fontSize: 15, color: MagicPalette.text, marginBottom: 8, textAlign: 'center' }}>{friend.bio}</Text>}
         {friend.interests && (
@@ -123,22 +125,22 @@ export default function FriendProfileScreen() {
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 12 }}>
           <View style={{ alignItems: 'center', marginHorizontal: 12 }}>
             <Text style={{ fontWeight: 'bold', color: MagicPalette.purple }}>{friend.connections}</Text>
-            <Text style={{ color: MagicPalette.gray, fontSize: 13 }}>Connections</Text>
+            <Text style={{ color: MagicPalette.gray, fontSize: 13 }}>{t('profile.connections')}</Text>
           </View>
           <View style={{ alignItems: 'center', marginHorizontal: 12 }}>
             <Text style={{ fontWeight: 'bold', color: MagicPalette.purple }}>{friend.sessions}</Text>
-            <Text style={{ color: MagicPalette.gray, fontSize: 13 }}>Sessions</Text>
+            <Text style={{ color: MagicPalette.gray, fontSize: 13 }}>{t('profile.sessions')}</Text>
           </View>
           <View style={{ alignItems: 'center', marginHorizontal: 12 }}>
             <Text style={{ fontWeight: 'bold', color: MagicPalette.purple }}>{friend.reviews}</Text>
-            <Text style={{ color: MagicPalette.gray, fontSize: 13 }}>Reviews</Text>
+            <Text style={{ color: MagicPalette.gray, fontSize: 13 }}>{t('profile.reviews')}</Text>
           </View>
           <View style={{ alignItems: 'center', marginHorizontal: 12 }}>
             <Text style={{ fontWeight: 'bold', color: MagicPalette.purple }}>{friend.eventsCreated}</Text>
-            <Text style={{ color: MagicPalette.gray, fontSize: 13 }}>Events</Text>
+            <Text style={{ color: MagicPalette.gray, fontSize: 13 }}>{t('profile.events')}</Text>
           </View>
         </View>
-        <Text style={styles.friendsTitle}>Friends</Text>
+        <Text style={styles.friendsTitle}>{t('profile.friends')}</Text>
         <FlatList
           data={friend.friends}
           keyExtractor={item => item.id}

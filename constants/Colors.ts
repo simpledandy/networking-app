@@ -24,6 +24,7 @@ export const MagicGradients = {
   chip: ['#FEC163', '#FF6F91'],
   card: ['#7F7FD5', '#E684AE', '#86A8E7'],
   accent: ['#FFD700', '#FF6F91'],
+  purple: ['#7F7FD5', '#E684AE'],
 };
 
 export const Colors = {

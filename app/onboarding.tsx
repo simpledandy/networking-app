@@ -3,6 +3,7 @@ import { MagicGradients, MagicPalette } from '@/constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Animated, Easing, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from './_layout';
 
@@ -28,6 +29,7 @@ export default function OnboardingScreen() {
   const router = useRouter();
   const { updateProfile, user } = useContext(AuthContext);
   const fadeAnim = useState(new Animated.Value(1))[0];
+  const { t } = useTranslation();
 
   const next = () => {
     Animated.timing(fadeAnim, { toValue: 0, duration: 200, useNativeDriver: true, easing: Easing.out(Easing.exp) }).start(() => {
@@ -51,7 +53,7 @@ export default function OnboardingScreen() {
 
   const handleFinish = () => {
     if (!name || !avatar || interests.length === 0 || !bio) {
-      setError('Please complete all fields.');
+      setError(t('error.completeAllFields'));
       return;
     }
     updateProfile({
@@ -77,30 +79,30 @@ export default function OnboardingScreen() {
         {step === 0 && (
           <View style={styles.centered}>
             <Image source={require('../assets/images/partial-react-logo.png')} style={{ width: 120, height: 120, marginBottom: 24 }} />
-            <Text style={styles.title}>Welcome to Magic Networking!</Text>
-            <Text style={styles.subtitle}>Connect, grow, and shine with your new network ✨</Text>
-            <MagicalButton title="Get Started" onPress={next} color={MagicPalette.purple} style={{ marginTop: 32 }} />
+            <Text style={styles.title}>{t('onboarding.welcomeTitle')}</Text>
+            <Text style={styles.subtitle}>{t('onboarding.welcomeSubtitle')}</Text>
+            <MagicalButton title={t('onboarding.getStarted')} onPress={next} color={MagicPalette.purple} style={{ marginTop: 32 }} />
           </View>
         )}
         {step === 1 && (
           <View style={styles.centered}>
-            <Text style={styles.title}>What's your name?</Text>
+            <Text style={styles.title}>{t('onboarding.nameTitle')}</Text>
             <TextInput
-              placeholder="Your name"
+              placeholder={t('onboarding.namePlaceholder')}
               value={name}
               onChangeText={setName}
               style={styles.input}
               autoFocus
             />
             <View style={styles.rowBtns}>
-              <MagicalButton title="Back" onPress={prev} color={MagicPalette.gray} style={{ marginTop: 24, marginRight: 8 }} />
-              <MagicalButton title="Next" onPress={next} color={MagicPalette.purple} style={{ marginTop: 24 }} />
+              <MagicalButton title={t('common.back')} onPress={prev} color={MagicPalette.gray} style={{ marginTop: 24, marginRight: 8 }} />
+              <MagicalButton title={t('common.next')} onPress={next} color={MagicPalette.purple} style={{ marginTop: 24 }} />
             </View>
           </View>
         )}
         {step === 2 && (
           <View style={styles.centered}>
-            <Text style={styles.title}>Choose your avatar</Text>
+            <Text style={styles.title}>{t('onboarding.avatarTitle')}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginVertical: 24 }} contentContainerStyle={{ alignItems: 'center' }}>
               {AVATARS.map(uri => (
                 <TouchableOpacity key={uri} onPress={() => setAvatar(uri)} style={[styles.avatarWrap, avatar === uri && styles.avatarSelected]}>
@@ -109,14 +111,14 @@ export default function OnboardingScreen() {
               ))}
             </ScrollView>
             <View style={styles.rowBtns}>
-              <MagicalButton title="Back" onPress={prev} color={MagicPalette.gray} style={{ marginTop: 24, marginRight: 8 }} />
-              <MagicalButton title="Next" onPress={next} color={MagicPalette.purple} style={{ marginTop: 24 }} />
+              <MagicalButton title={t('common.back')} onPress={prev} color={MagicPalette.gray} style={{ marginTop: 24, marginRight: 8 }} />
+              <MagicalButton title={t('common.next')} onPress={next} color={MagicPalette.purple} style={{ marginTop: 24 }} />
             </View>
           </View>
         )}
         {step === 3 && (
           <View style={styles.centered}>
-            <Text style={styles.title}>Pick your interests</Text>
+            <Text style={styles.title}>{t('onboarding.interestsTitle')}</Text>
             <View style={styles.chipWrap}>
               {INTERESTS.map(interest => (
                 <TouchableOpacity
@@ -124,54 +126,54 @@ export default function OnboardingScreen() {
                   style={[styles.chip, interests.includes(interest) && styles.chipSelected]}
                   onPress={() => setInterests(interests.includes(interest) ? interests.filter(i => i !== interest) : [...interests, interest])}
                 >
-                  <Text style={[styles.chipText, interests.includes(interest) && { color: MagicPalette.white }]}>{interest}</Text>
+                  <Text style={[styles.chipText, interests.includes(interest) && { color: MagicPalette.white }]}>{t(`interests.${interest.toLowerCase()}`)}</Text>
                 </TouchableOpacity>
               ))}
             </View>
             <View style={{ flexDirection: 'row', marginTop: 12 }}>
               <TextInput
-                placeholder="Add custom..."
+                placeholder={t('onboarding.addCustomPlaceholder')}
                 value={customInterest}
                 onChangeText={setCustomInterest}
                 style={[styles.input, { flex: 1, marginRight: 8 }]}
               />
-              <MagicalButton title="Add" onPress={handleAddInterest} color={MagicPalette.blue} style={{ paddingHorizontal: 16 }} />
+              <MagicalButton title={t('common.add')} onPress={handleAddInterest} color={MagicPalette.blue} style={{ paddingHorizontal: 16 }} />
             </View>
             <View style={styles.rowBtns}>
-              <MagicalButton title="Back" onPress={prev} color={MagicPalette.gray} style={{ marginTop: 24, marginRight: 8 }} />
-              <MagicalButton title="Next" onPress={next} color={MagicPalette.purple} style={{ marginTop: 24 }} />
+              <MagicalButton title={t('common.back')} onPress={prev} color={MagicPalette.gray} style={{ marginTop: 24, marginRight: 8 }} />
+              <MagicalButton title={t('common.next')} onPress={next} color={MagicPalette.purple} style={{ marginTop: 24 }} />
             </View>
           </View>
         )}
         {step === 4 && (
           <View style={styles.centered}>
-            <Text style={styles.title}>Write a short bio</Text>
+            <Text style={styles.title}>{t('onboarding.bioTitle')}</Text>
             <TextInput
-              placeholder="Tell us about yourself..."
+              placeholder={t('onboarding.bioPlaceholder')}
               value={bio}
               onChangeText={setBio}
               multiline
               style={[styles.input, { minHeight: 80 }]}
             />
             <View style={styles.rowBtns}>
-              <MagicalButton title="Back" onPress={prev} color={MagicPalette.gray} style={{ marginTop: 24, marginRight: 8 }} />
-              <MagicalButton title="Next" onPress={next} color={MagicPalette.purple} style={{ marginTop: 24 }} />
+              <MagicalButton title={t('common.back')} onPress={prev} color={MagicPalette.gray} style={{ marginTop: 24, marginRight: 8 }} />
+              <MagicalButton title={t('common.next')} onPress={next} color={MagicPalette.purple} style={{ marginTop: 24 }} />
             </View>
           </View>
         )}
         {step === 5 && (
           <View style={styles.centered}>
-            <Text style={styles.title}>Ready to join?</Text>
+            <Text style={styles.title}>{t('onboarding.readyTitle')}</Text>
             <Image source={{ uri: avatar }} style={[styles.avatar, { marginBottom: 12 }]} />
             <Text style={styles.summaryText}>{name}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 8 }}>
               {interests.map(i => (
-                <View key={i} style={[styles.chip, styles.chipSelected, { margin: 2 }]}><Text style={[styles.chipText, { color: MagicPalette.white }]}>{i}</Text></View>
+                <View key={i} style={[styles.chip, styles.chipSelected, { margin: 2 }]}><Text style={[styles.chipText, { color: MagicPalette.white }]}>{t(`interests.${i.toLowerCase()}`)}</Text></View>
               ))}
             </View>
             <Text style={[styles.summaryText, { fontSize: 15, color: MagicPalette.text, marginBottom: 8 }]}>{bio}</Text>
             {error ? <Text style={styles.error}>{error}</Text> : null}
-            <MagicalButton title="Finish Onboarding" onPress={handleFinish} color={MagicPalette.purple} style={{ marginTop: 24 }} />
+            <MagicalButton title={t('onboarding.finishButton')} onPress={handleFinish} color={MagicPalette.purple} style={{ marginTop: 24 }} />
           </View>
         )}
       </Animated.View>

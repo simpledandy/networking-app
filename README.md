@@ -1,4 +1,4 @@
-# Networking App
+# BeFriend
 
 A modern React Native (Expo) app for networking events, built with Expo Router and ready for Supabase backend integration.
 
@@ -24,7 +24,7 @@ This app provides a social platform for discovering, creating, and joining netwo
 1. **Clone the repository:**
    ```sh
    git clone <your-repo-url>
-   cd networking-app
+   cd befriend
    ```
 2. **Install dependencies:**
    ```sh

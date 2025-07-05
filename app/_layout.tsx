@@ -1,16 +1,13 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, usePathname, useRouter } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { Stack } from 'expo-router';
 import { createContext, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { I18nextProvider } from 'react-i18next';
 import 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import i18n from '../i18n';
 
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import { MagicPalette } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { StyleSheet, Text, View } from 'react-native';
 
 // Mock Auth Context (move to a separate file for real projects)
 const initialProfile = {
@@ -32,81 +29,9 @@ const initialProfile = {
 } as const;
 export const AuthContext = createContext<{ user: typeof initialProfile | null; signOut: () => void; updateProfile: (p: any) => void; }>({ user: initialProfile, signOut: () => {}, updateProfile: (p: any) => {} });
 
-function CustomHeader() {
-  const pathname = usePathname();
-  const router = useRouter();
-  let title = 'Feed';
-  let icon = 'person.2.fill';
-  let showBack = false;
-  // Define root tabs
-  const rootTabs = ['/','/(tabs)','/(tabs)/index','/(tabs)/sessions','/(tabs)/profile','/(tabs)/explore','/(tabs)/create-event'];
-  if (pathname.includes('/sessions')) {
-    title = 'Sessions';
-    icon = 'calendar';
-  } else if (pathname.includes('/profile')) {
-    title = 'Profile';
-    icon = 'person.crop.circle';
-  } else if (pathname.includes('/explore')) {
-    title = 'Explore';
-    icon = 'sparkles';
-  } else if (pathname.includes('/create-event')) {
-    title = 'Create';
-    icon = 'plus.circle.fill';
-  }
-  if (!rootTabs.includes(pathname)) {
-    showBack = true;
-  }
-  return (
-    <SafeAreaView edges={['top']} style={{ backgroundColor: MagicPalette.white }}>
-      <View style={styles.header}>
-        {showBack && (
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={{
-              marginRight: 10,
-              padding: 4,
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: MagicPalette.purple,
-              backgroundColor: 'transparent',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <IconSymbol name="chevron.left" size={22} color={MagicPalette.purple} />
-          </TouchableOpacity>
-        )}
-        <IconSymbol name={icon as any} size={28} color={MagicPalette.purple} style={{ marginRight: 10 }} />
-        <Text style={styles.headerText}>{title}</Text>
-      </View>
-    </SafeAreaView>
-  );
-}
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: MagicPalette.white,
-    borderBottomWidth: 1,
-    borderBottomColor: MagicPalette.gray,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: MagicPalette.black,
-  },
-});
 
-export default function RootLayout() {
+function AppContent() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -125,25 +50,42 @@ export default function RootLayout() {
   return (
     <AuthContext.Provider value={{ user, signOut, updateProfile }}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: true, header: () => <CustomHeader /> }}
-        >
+        <Stack screenOptions={{ headerShown: false }}>
           {showAuth ? (
             <>
-              <Stack.Screen name="sign-in"  />
-              <Stack.Screen name="sign-up" />
-              <Stack.Screen name="onboarding" />
+              <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+              <Stack.Screen name="sign-up" options={{ headerShown: false }} />
+              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
             </>
           ) : (
             <>
               <Stack.Screen 
                 name="(tabs)"
+                options={{
+                  title: "Tabs",
+                  headerStyle: { backgroundColor: MagicPalette.white },
+                }}
+              />
+              <Stack.Screen 
+                name="chat-conversation" 
+                options={{ 
+                  headerShown: false,
+                  presentation: 'modal'
+                }} 
               />
               <Stack.Screen name="+not-found" options={{ headerShown: false }} />
             </>
           )}
         </Stack>
-        <StatusBar style="auto" />
       </ThemeProvider>
     </AuthContext.Provider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <AppContent />
+    </I18nextProvider>
   );
 }

@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
+import { FancyTabBarBackground } from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -17,7 +17,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
+        tabBarBackground: FancyTabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
@@ -26,76 +26,55 @@ export default function TabLayout() {
           default: {},
         }),
       }}>
+      {/*
+        To use translations for tab labels/titles, set them in each screen component (e.g. index.tsx, explore.tsx, etc.)
+        using useTranslation, and pass them as options via router or navigation props.
+        This avoids context issues with I18nextProvider in Expo Router layouts.
+      */}
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Feed',
-          tabBarLabel: 'Feed',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.2.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarLabel: 'Explore',
+          title: 'connect',
+          tabBarLabel: 'connect',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="sparkles" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="create-event"
-        options={{
-          title: 'Create',
-          tabBarLabel: 'Create',
-          tabBarIcon: ({ color }) => <IconSymbol size={32} name="plus.circle.fill" color={color} />,
         }}
       />
       <Tabs.Screen
         name="sessions"
         options={{
-          title: 'Sessions',
-          tabBarLabel: 'Sessions',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="calendar" color={color} />,
+          title: 'sessions',
+          tabBarLabel: 'sessions',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="calendar.badge.clock" color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
-          tabBarLabel: 'Profile',
+          title: 'profile',
+          tabBarLabel: 'profile',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.crop.circle" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="chat"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="calendar"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="review"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="event-details"
-        options={{
-          href: null,
-        }}
-      />
+
       <Tabs.Screen
         name="friend-profile"
         options={{
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="subcategories"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="connection-mode"
+        options={{
+          href: null,
+        }}
+      />
+
     </Tabs>
   );
 }

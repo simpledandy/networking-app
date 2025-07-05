@@ -2,7 +2,7 @@ import { MagicPalette } from '@/constants/Colors';
 import { StyleSheet, View } from 'react-native';
 
 // This is a shim for web and Android where the tab bar is generally opaque.
-export default function FancyTabBarBackground() {
+export function FancyTabBarBackground() {
   return (
     <View style={styles.background} />
   );
